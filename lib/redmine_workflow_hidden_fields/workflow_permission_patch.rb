@@ -8,7 +8,7 @@ module RedmineWorkflowHiddenFields
         filter = base._validate_callbacks.find{ |c| c.raw_filter == rule_inclusion_validation }.filter
         skip_callback :validate, filter            
 
-        validates_inclusion_of :rule, :in => %w(readonly required hidden)
+        validates_inclusion_of :rule, :in => %w(readonly required hidden hidden_show)
       end
     end
   end

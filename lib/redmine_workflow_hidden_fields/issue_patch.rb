@@ -28,7 +28,7 @@ module RedmineWorkflowHiddenFields
 			# For now: just exclude Fix Info and RNs, as it is printed seperately below description.
 			def viewable_custom_field_values(user=nil)
 				custom_field_values.reject do |value|
-					hidden_attribute_names(user).include?(value.custom_field_id.to_s)
+					hidden_attribute_names(user).include?(value.custom_field_id.to_s) || hidden_show_attribute_names(user).include?(value.custom_field_id.to_s)
 				end
 			end
 
@@ -43,6 +43,11 @@ module RedmineWorkflowHiddenFields
 			def hidden_attribute_names(user=nil)
 				@hidden_attribute_names ||= {}
 				@hidden_attribute_names[user || :nil] ||= workflow_rule_by_attribute(user).reject {|attr, rule| rule != 'hidden'}.keys
+			end
+
+			def hidden_show_attribute_names(user=nil)
+				@hidden_show_attribute_names ||= {}
+				@hidden_show_attribute_names[user || :nil] ||= workflow_rule_by_attribute(user).reject {|attr, rule| rule != 'hidden_show'}.keys
 			end
 
 			def tracker_with_hidden= (new_tracker)
@@ -61,11 +66,15 @@ module RedmineWorkflowHiddenFields
 				hidden_attribute_names(user).include?(name.to_s)
 			end
 
+			def hidden_show_attribute?(name, user=nil)
+				hidden_show_attribute_names(user).include?(name.to_s)
+			end
+
 
 			def each_notification_with_hidden(users, &block)
 				if users.any?
 					variations = users.collect {
-						|user| (hidden_attribute_names(user) + (custom_field_values - visible_custom_field_values(user))).uniq
+							|user| (hidden_attribute_names(user) + (custom_field_values - visible_custom_field_values(user))).uniq
 					}.uniq
 					recipient_groups = Array.new(variations.count) { Array.new }
 					users.each do |user|

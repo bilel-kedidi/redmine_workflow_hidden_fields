@@ -43,12 +43,12 @@
 <div class="attributes">
 <%= issue_fields_rows do |rows|  
   i = 0
-  unless @issue.hidden_attribute?('status')
+  unless @issue.hidden_attribute?('status') or @issue.hidden_show_attribute?('status')
   rows.left l(:field_status), @issue.status.name, :class => 'status'
 	i += 1
   end
   
-  unless @issue.hidden_attribute?('priority_id')
+  unless @issue.hidden_attribute?('priority_id') or @issue.hidden_show_attribute?('priority_id')
     if i % 2 == 0
   rows.left l(:field_priority), @issue.priority.name, :class => 'priority'
 	else
@@ -56,7 +56,7 @@
 	end
 	i += 1
   end
-  unless @issue.disabled_core_fields.include?('assigned_to_id') || @issue.hidden_attribute?('assigned_to_id')
+  unless @issue.disabled_core_fields.include?('assigned_to_id') || @issue.hidden_attribute?('assigned_to_id') || @issue.hidden_show_attribute?('assigned_to_id')
     if i % 2 == 0
     rows.left l(:field_assigned_to), (@issue.assigned_to ? link_to_user(@issue.assigned_to) : "-"), :class => 'assigned-to'
     else
@@ -65,7 +65,7 @@
     i += 1
   end
   
-  unless @issue.disabled_core_fields.include?('category_id') || (@issue.category.nil? && @issue.project.issue_categories.none?) || @issue.hidden_attribute?('category_id')
+  unless @issue.disabled_core_fields.include?('category_id') || (@issue.category.nil? && @issue.project.issue_categories.none?) || @issue.hidden_attribute?('category_id') || @issue.hidden_show_attribute?('category_id')
     if i % 2 == 0
     rows.left l(:field_category), (@issue.category ? @issue.category.name : "-"), :class => 'category'
 	else
@@ -73,7 +73,7 @@
 	end
 	i += 1
   end
-  unless @issue.disabled_core_fields.include?('fixed_version_id') || (@issue.fixed_version.nil? && @issue.assignable_versions.none?) || @issue.hidden_attribute?('fixed_version_id')
+  unless @issue.disabled_core_fields.include?('fixed_version_id') || (@issue.fixed_version.nil? && @issue.assignable_versions.none?) || @issue.hidden_attribute?('fixed_version_id') || @issue.hidden_show_attribute?('fixed_version_id')
 	if i % 2 == 0
     rows.left l(:field_fixed_version), (@issue.fixed_version ? link_to_version(@issue.fixed_version) : "-"), :class => 'fixed-version'
 	else
@@ -82,7 +82,7 @@
 	i += 1
   end
 
-  unless @issue.disabled_core_fields.include?('start_date') || @issue.hidden_attribute?('start_date')
+  unless @issue.disabled_core_fields.include?('start_date') || @issue.hidden_attribute?('start_date') || @issue.hidden_show_attribute?('start_date')
     if i % 2 == 0
     rows.left l(:field_start_date), format_date(@issue.start_date), :class => 'start-date'
 	else
@@ -90,7 +90,7 @@
 	end
 	i += 1
   end
-  unless @issue.disabled_core_fields.include?('due_date') || @issue.hidden_attribute?('due_date')
+  unless @issue.disabled_core_fields.include?('due_date') || @issue.hidden_attribute?('due_date') || @issue.hidden_show_attribute?('due_date')
     if i % 2 == 0
       rows.left l(:field_due_date), format_date(@issue.due_date), :class => 'due-date'
 	else
@@ -98,7 +98,7 @@
 	end
 	i += 1
   end
-  unless @issue.disabled_core_fields.include?('done_ratio') || @issue.hidden_attribute?('done_ratio')
+  unless @issue.disabled_core_fields.include?('done_ratio') || @issue.hidden_attribute?('done_ratio') || @issue.hidden_show_attribute?('done_ratio')
     if i % 2 == 0
       rows.left l(:field_done_ratio), progress_bar(@issue.done_ratio, :legend => "#{@issue.done_ratio}%"), :class => 'progress'
 	else
@@ -106,7 +106,7 @@
 	end
 	i += 1
   end
-  unless @issue.disabled_core_fields.include?('estimated_hours') || @issue.hidden_attribute?('estimated_hours')
+  unless @issue.disabled_core_fields.include?('estimated_hours') || @issue.hidden_attribute?('estimated_hours') || @issue.hidden_show_attribute?('estimated_hours')
     if i % 2 == 0
       rows.left l(:field_estimated_hours), issue_estimated_hours_details(@issue), :class => 'estimated-hours'
 	else
@@ -130,7 +130,7 @@ end %>
 
 <% if @issue.description? || @issue.attachments.any? -%>
 <hr />
-<% if @issue.description? %>
+<% if @issue.description? and !@issue.hidden_show_attribute?('description')%>
 <div class="description">
   <div class="contextual">
   <%= link_to l(:button_quote), quoted_issue_path(@issue), :remote => true, :method => 'post', :class => 'icon icon-comment' if @issue.notes_addable? %>

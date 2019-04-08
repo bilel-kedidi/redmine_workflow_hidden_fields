@@ -15,6 +15,7 @@ module RedmineWorkflowHiddenFields
 						name = field.is_a?(CustomField) ? field.id.to_s : field
 						options = [["", ""], [l(:label_readonly), "readonly"]]
 						options << [l(:label_hidden), "hidden"]
+						options << [l(:label_hidden_show), "hidden_show"]
 						options << [l(:label_required), "required"] unless field_required?(field)
 						html_options = {}
 
